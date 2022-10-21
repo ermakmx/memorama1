@@ -1,0 +1,36 @@
+body {
+  font-family: 'Open Sans', sans-serif;
+}
+
+h1 {
+  text-align: center;
+}
+
+div#tablero {
+  background: darkblue;
+  border: #333 10px solid;
+  width: 800px;
+  height: 540px;
+  padding: 24px;
+  margin: 2em auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(4, 1fr);
+  justify-items: center;
+}
+
+div#tablero>div {
+  background-color: #EEE;
+  background-image: url(../assets/icon.png);
+  background-size: cover;
+  border: #000 1px solid;
+  width: 71px;
+  height: 71px;
+  float: left;
+  margin: 10px;
+  padding: 20px;
+  font-size: 60px;
+  font-weight: bold;
+  cursor: pointer;
+  text-align: center;
+}
