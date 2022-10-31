@@ -83,7 +83,7 @@ function startTimer() {
   }
 
   if (tens > 99) {
-    console.log("seconds");
+    
     seconds++;
     appendSeconds.innerHTML = "0" + seconds;
     tens = 0;
@@ -126,7 +126,7 @@ function nuevoTablero() {
 }
 
 function girarCarta(carta) {
-  console.log(carta.firstChild.attributes.src.value);
+
   if (
     valoresCartas.length < 2 &&
     carta.firstChild.attributes.src.value == "./assets/icon.png"
@@ -173,8 +173,8 @@ function girarCarta(carta) {
       } else {
         var carta_1 = document.getElementById(idCartas[0]);
         var carta_2 = document.getElementById(idCartas[1]);
-        console.log((carta_1.style.border = "2px solid red"));
-        console.log((carta_2.style.border = "2px solid red"));
+        carta_1.style.border = "2px solid red";
+        carta_2.style.border = "2px solid red";
         function ocultarCarta() {
           // Girar la carta y volver a mostrar la imagen
           // Ocultamos carta 1 y carta 2
