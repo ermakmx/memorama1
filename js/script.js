@@ -1,109 +1,199 @@
+var doc = document.querySelector("div#tablero");
 
+var cartasTodas = _.sampleSize(
+  [
+    "./assets/ags.png",
+    "./assets/bcn.png",
+    "./assets/bcs.png",
+    "./assets/campeche.png",
+    "./assets/cdmx.png",
+    "./assets/chiapas.png",
+    "./assets/chihuahua.png",
+    "./assets/coahuila.png",
+    "./assets/colima.png",
+    "./assets/durango.png",
+    "./assets/edomx.png",
+    "./assets/guanajuato.png",
+    "./assets/guerrero.png",
+    "./assets/hidalgo.png",
+    "./assets/jalisco.png",
+    "./assets/michoacan.png",
+    "./assets/morelos.png",
+    "./assets/nayarit.png",
+    "./assets/nuevoleon.png",
+    "./assets/oaxaca.png",
+    "./assets/puebla.png",
+    "./assets/queretaro.png",
+    "./assets/quintanaroo.png",
+    "./assets/sanluis.png",
+    "./assets/sinaloa.png",
+    "./assets/sonora.png",
+    "./assets/tabasco.png",
+    "./assets/tamaulipas.png",
+    "./assets/tlaxcala.png",
+    "./assets/veracruz.png",
+    "./assets/yucatan.png",
+    "./assets/zacatecas.png",
+  ],
+  8
+);
 
-var arrNombres = ['1.png','2.png','3.png','4.png','5.png','6.png','7.png','8.png','9.png','10.png'];
+Array.prototype.mezclar = function () {
+  var i = this.length;
+  var indiceAleatorio;
+  var valorTemporal;
 
-var arryImg = [];
-var img = new Image(20,20);
+  while (--i > 0) {
+    indiceAleatorio = Math.floor(Math.random() * (i + 1));
+    valorTemporal = this[indiceAleatorio];
+    this[indiceAleatorio] = this[i];
+    this[i] = valorTemporal;
+  }
+};
 
-arrNombres.forEach((item)=>{
-arryImg.push(item)
-})
-
-console.log(arryImg);
-
-var arrayOpciones = ['A','A', 'B', 'B', 'C', 'C', 'D', 'D', 'E', 'E', 'F', 'F', 'G', 'G', 'H', 'H'];
 var valoresCartas = [];
 var idCartas = [];
+var contadorIntento = 0;
 var cartasAdivinadas = 0;
-var contadorIntento=0;
+var pares = 0;
+var cartas = [];
 
+var seconds = 00;
+var tens = 00;
+var appendTens = document.getElementById("tens");
+var appendSeconds = document.getElementById("seconds");
+var buttonStart = document.getElementById("button-start");
+var buttonStop = document.getElementById("button-stop");
+var buttonReset = document.getElementById("button-reset");
+var Interval;
 
-
-
-
-// Método Fisher-Yates para mezclar un array
-Array.prototype.mezclar = function () {
-    var i = this.length;
-    var indiceAleatorio;
-    var valorTemporal;
-
-    while (--i > 0) {
-        indiceAleatorio = Math.floor(Math.random() * (i + 1));
-        valorTemporal = this[indiceAleatorio];
-        this[indiceAleatorio] = this[i];
-        this[i] = valorTemporal;
-    };
+buttonStart.onclick = function () {
+  nuevoTablero();
 };
 
-// Función para crear un nuevo tablero
+function startTimer() {
+  tens++;
+
+  if (tens <= 9) {
+    appendTens.innerHTML = "0" + tens;
+  }
+
+  if (tens > 9) {
+    appendTens.innerHTML = tens;
+  }
+
+  if (tens > 99) {
+    console.log("seconds");
+    seconds++;
+    appendSeconds.innerHTML = "0" + seconds;
+    tens = 0;
+    appendTens.innerHTML = "0" + 0;
+  }
+
+  if (seconds > 9) {
+    appendSeconds.innerHTML = seconds;
+  }
+}
+
 function nuevoTablero() {
-    cartasAdivinadas = 0;
-    var codigoHtml = '';
-    arrayOpciones.mezclar();
+  clearInterval(Interval);
+  tens = "00";
+  seconds = "00";
+  appendTens.innerHTML = tens;
+  appendSeconds.innerHTML = seconds;
+  contadorIntento = 0;
+  pares = 0;
+  document.getElementById("intentos").innerHTML = 0;
+  document.getElementById("puntuacion").innerHTML = `<h3>Puntuacion: ${pares}`;
+  cartasAdivinadas = 0;
 
-    for (var i = 0; i < arrayOpciones.length; i++) {
-        //codigoHtml += '<div id="carta_' + i + '" onclick="girarCarta(this,\'' + arrayOpciones[i] + '\')"></div>';
-        codigoHtml += `<div id="carta_${i}" onclick="girarCarta(this,'${arrayOpciones[i]}')"></div>`;
-        
-        console.log(codigoHtml);
-    }
+  startTimer();
+  clearInterval(Interval);
+  Interval = setInterval(startTimer, 10);
+  cartas = cartasTodas.concat(...cartasTodas);
+  cartas.mezclar();
 
-    document.getElementById('tablero').innerHTML = codigoHtml;
-};
-function girarCarta(carta, val) {
-    if (carta.innerHTML == "" && valoresCartas.length < 2) {
-        carta.style.background = '#FFF';
-        carta.style.border = 'inset #2af21f thick'
-        carta.innerHTML = val;
-        // Código a ejecutar al dar vuelta la primer carta
-        if (valoresCartas.length === 0) {
-            valoresCartas.push(val);
-            idCartas.push(carta.id);
-            // Código a ejecutar al dar vuelta la segunda carta
-        } else if (valoresCartas.length === 1) {
-            valoresCartas.push(val);
-            idCartas.push(carta.id);
-            
-            // Comprobamos si las cartas son iguales
-            contadorIntento++;
-            if (valoresCartas[0] === valoresCartas[1]) {
-                cartasAdivinadas += 2;
-                // Limpiamos las variables (arrays)
-                valoresCartas = [];
-                idCartas = []
+  var codhtml = "";
+  valoresCartas = [];
+  idCartas = [];
+  contadorIntento = 0;
+  cartasAdivinadas = 0;
 
-                // Comprobamos si terminamos el juego
-                if (cartasAdivinadas === arrayOpciones.length) {
-                    alert("Ganaste");
-                    document.getElementById('tablero').innerHTML = "";
-                    nuevoTablero();
-                }
-            } else {
-                function ocultarCarta() {
-                    // Grirar la carta y volver a mostrar la imagen
-                    var carta_1 = document.getElementById(idCartas[0]);
-                    var carta_2 = document.getElementById(idCartas[1]);
+  for (let index = 0; index < cartas.length; index++) {
+    codhtml += `<div  id="carta_${index}" car=${cartas[index]} onclick="girarCarta(this)" class="carta"><Image id="imagen"  src="./assets/icon.png"></Image></div>`;
+  }
+  doc.innerHTML = codhtml;
+}
 
-                    // Añadimos estilos para ocular la carta 1
-                    carta_1.style.backgroundColor = "#EEE"
-                    carta_1.style.backgroundImage = "url(../assets/icon.png)";
-                    carta_1.style.backgroundSize = "cover";
-                    carta_1.style.border = '';
-                    carta_1.innerHTML = "";
+function girarCarta(carta) {
+  console.log(carta.firstChild.attributes.src.value);
+  if (
+    valoresCartas.length < 2 &&
+    carta.firstChild.attributes.src.value == "./assets/icon.png"
+  ) {
+    carta.children.imagen.src = carta.attributes.car.value;
 
-                    // Añadimos estilos para ocular la carta 2
-                    carta_2.style.backgroundColor = "#EEE"
-                    carta_2.style.backgroundImage = "url(../assets/icon.png)";
-                    carta_2.style.backgroundSize = "cover";
-                    carta_2.style.border = '';
-                    carta_2.innerHTML = "";
+    if (valoresCartas.length === 0) {
+      valoresCartas.push(carta.attributes.car.value);
+      idCartas.push(carta.id);
+      // Código a ejecutar al dar vuelta la segunda carta
+    } else if (valoresCartas.length === 1) {
+      valoresCartas.push(carta.attributes.car.value);
+      idCartas.push(carta.id);
 
-                    // Limpiamos las variables (arrays)
-                    valoresCartas = [];
-                    idCartas = []
-                }
-                setTimeout(ocultarCarta, 700);
-            }
+      // Comprobamos si las cartas son iguales
+      contadorIntento++;
+      if (valoresCartas[0] === valoresCartas[1]) {
+        cartasAdivinadas += 2;
+        pares = cartasAdivinadas / 2;
+        document.getElementById(
+          "puntuacion"
+        ).innerHTML = `<h3>Puntuacion:${pares}</h3>`;
+        var carta_1 = document.getElementById(idCartas[0]);
+        var carta_2 = document.getElementById(idCartas[1]);
+        carta_1.style.border = "2px solid green";
+        carta_2.style.border = "2px solid green";
+
+        // Limpiamos las variables (arrays)
+        valoresCartas = [];
+        idCartas = [];
+
+        // Comprobamos si terminamos el juego
+        if (cartasAdivinadas === cartas.length) {
+          alert("Ganaste");
+          document.getElementById("tablero").innerHTML = "";
+          contadorIntento = 0;
+          pares = 0;
+          document.getElementById("intentos").innerHTML = 0;
+          document.getElementById(
+            "puntuacion"
+          ).innerHTML = `<h3>Puntuacion: ${pares}`;
+          clearInterval(Interval);
         }
+      } else {
+        var carta_1 = document.getElementById(idCartas[0]);
+        var carta_2 = document.getElementById(idCartas[1]);
+        console.log((carta_1.style.border = "2px solid red"));
+        console.log((carta_2.style.border = "2px solid red"));
+        function ocultarCarta() {
+          // Girar la carta y volver a mostrar la imagen
+          // Ocultamos carta 1 y carta 2
+
+          var carta_1 = document.getElementById(idCartas[0]);
+          var carta_2 = document.getElementById(idCartas[1]);
+
+          carta_1.style.border = "";
+          carta_2.style.border = "";
+          carta_1.firstChild.src = "./assets/icon.png";
+          carta_2.firstChild.src = "./assets/icon.png";
+
+          // Limpiamos las variables (arrays)
+          valoresCartas = [];
+          idCartas = [];
+        }
+        setTimeout(ocultarCarta, 1500);
+      }
     }
-};
+    document.getElementById("intentos").innerHTML = `${contadorIntento}`;
+  }
+}
