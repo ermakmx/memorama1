@@ -1,5 +1,5 @@
 var doc = document.querySelector("div#tablero");
-
+// de un grupo de 32 cartas se seleccionan 8
 var cartasTodas = _.sampleSize(
   [
     "./assets/ags.png",
@@ -37,7 +37,7 @@ var cartasTodas = _.sampleSize(
   ],
   8
 );
-
+// metodo se agrega a todas las arrays para mezclar sus elementos
 Array.prototype.mezclar = function () {
   var i = this.length;
   var indiceAleatorio;
@@ -50,14 +50,13 @@ Array.prototype.mezclar = function () {
     this[i] = valorTemporal;
   }
 };
-
+// declaracion e inicializacion primera y global de las variables
 var valoresCartas = [];
 var idCartas = [];
 var contadorIntento = 0;
 var cartasAdivinadas = 0;
 var pares = 0;
 var cartas = [];
-
 var seconds = 00;
 var tens = 00;
 var appendTens = document.getElementById("tens");
@@ -66,11 +65,11 @@ var buttonStart = document.getElementById("button-start");
 var buttonStop = document.getElementById("button-stop");
 var buttonReset = document.getElementById("button-reset");
 var Interval;
-
+// funcion del boton para reiniciar el tablero
 buttonStart.onclick = function () {
   nuevoTablero();
 };
-
+// funcion que comienza a medir el tiempo
 function startTimer() {
   tens++;
 
@@ -83,7 +82,6 @@ function startTimer() {
   }
 
   if (tens > 99) {
-    
     seconds++;
     appendSeconds.innerHTML = "0" + seconds;
     tens = 0;
@@ -94,7 +92,7 @@ function startTimer() {
     appendSeconds.innerHTML = seconds;
   }
 }
-
+// inicializacion del tablero y variables cada que inicie.
 function nuevoTablero() {
   clearInterval(Interval);
   tens = "00";
@@ -110,23 +108,22 @@ function nuevoTablero() {
   startTimer();
   clearInterval(Interval);
   Interval = setInterval(startTimer, 10);
-  cartas = cartasTodas.concat(...cartasTodas);
-  cartas.mezclar();
+  cartas = cartasTodas.concat(...cartasTodas); // se copian las 8 cartas seleccionadas
+  cartas.mezclar(); //se mezclan con la funcion 
 
   var codhtml = "";
   valoresCartas = [];
   idCartas = [];
   contadorIntento = 0;
   cartasAdivinadas = 0;
-
+// inyectamos en el contenedor las cartas
   for (let index = 0; index < cartas.length; index++) {
     codhtml += `<div  id="carta_${index}" car=${cartas[index]} onclick="girarCarta(this)" class="carta"><Image id="imagen"  src="./assets/icon.png"></Image></div>`;
   }
   doc.innerHTML = codhtml;
 }
-
+// comienza el giro y verificacion de las cartas
 function girarCarta(carta) {
-
   if (
     valoresCartas.length < 2 &&
     carta.firstChild.attributes.src.value == "./assets/icon.png"
@@ -194,6 +191,7 @@ function girarCarta(carta) {
         setTimeout(ocultarCarta, 1500);
       }
     }
+    //se escribe el numero de intento
     document.getElementById("intentos").innerHTML = `${contadorIntento}`;
   }
 }
